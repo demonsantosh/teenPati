@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "148592253454",
+    "firebase_url": "https://teenpati-4114c.firebaseio.com",
+    "project_id": "teenpati-4114c",
+    "storage_bucket": "teenpati-4114c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:148592253454:android:9752537c7892d8c6b47a5f",
+        "android_client_info": {
+          "package_name": "com.hamro.teenpatigame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "148592253454-e2jv6at4g8oqjk44tmvg476m3e9rvvgr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hamro.teenpatigame",
+            "certificate_hash": "7665dedc7341a861f42b909b7de12a0114ee2fde"
+          }
+        },
+        {
+          "client_id": "148592253454-jgggmlmqffcimof1joendb2tcsfcm8u1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEZgPu__GIj15dK_AcfieiZY4bM2UxhW0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "148592253454-jgggmlmqffcimof1joendb2tcsfcm8u1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

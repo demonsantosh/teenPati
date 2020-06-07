@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         btnPlayFireBase = findViewById(R.id.btnPlayFireBase) as Button
         btnPlayFireBase!!.setOnClickListener({
             val database = Firebase.database
-            val myRef = database.getReference("isGameOn")
+            val myRef = database.getReference("gameOn")
             myRef.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val value = dataSnapshot.getValue<Boolean>()

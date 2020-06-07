@@ -21,7 +21,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txvMoneyPLayer3"
-            android:layout_width="70dp"
+            android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_below="@+id/player3"
             android:layout_marginLeft="5dp"
@@ -42,7 +42,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txvMoneyPLayer2"
-            android:layout_width="70dp"
+            android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_below="@+id/player2"
             android:layout_marginLeft="5dp"
@@ -72,7 +72,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txvMoneyPLayer4"
-            android:layout_width="75dp"
+            android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_below="@+id/player4"
             android:layout_marginTop="5dp"
@@ -332,7 +332,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txvMoneyPLayer1"
-            android:layout_width="75dp"
+            android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_below="@+id/player1"
             android:layout_marginLeft="3dp"
@@ -363,7 +363,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txvMoneyPLayer5"
-            android:layout_width="75dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_below="@+id/player5"
             android:layout_marginLeft="5dp"

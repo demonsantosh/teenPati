@@ -380,10 +380,10 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="7dp"
         android:gravity="center"
-        android:visibility="invisible">
+        android:visibility="visible">
 
         <Button
-            android:id="@+id/btn_fold"
+            android:id="@+id/btnFold"
             android:layout_width="75dp"
             android:layout_height="match_parent"
             android:background="#2395c2"
@@ -393,7 +393,7 @@
             android:textSize="25sp" />
 
         <Button
-            android:id="@+id/btn_show"
+            android:id="@+id/btnShow"
             android:layout_width="75dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
@@ -404,84 +404,14 @@
             android:textSize="25sp" />
 
         <Button
-            android:id="@+id/btn_call"
-            android:layout_width="75dp"
+            android:id="@+id/btnRaise"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:background="#2395c2"
-            android:text="Call"
+            android:text="next Turn"
             android:textAllCaps="false"
             android:textColor="#ffffff"
             android:textSize="25sp" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/txt_call"
-            android:layout_width="75dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:background="#2395c2"
-            android:gravity="center"
-            android:text="000"
-            android:textAllCaps="false"
-            android:textColor="#ffffff"
-            android:textSize="25sp" />
-
-        <Button
-            android:id="@+id/btn_raise"
-            android:layout_width="75dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:background="#2395c2"
-            android:text="Raise"
-            android:textAllCaps="false"
-            android:textColor="#ffffff"
-            android:textSize="25sp" />
-
-        <Button
-            android:id="@+id/btn_minus"
-            android:layout_width="38dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:background="#2395c2"
-            android:text="-"
-            android:textAllCaps="false"
-            android:textColor="#ffffff"
-            android:textSize="28sp" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/txt_raise"
-            android:layout_width="75dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="2dp"
-            android:background="#2395c2"
-            android:gravity="center"
-            android:text="000"
-            android:textAllCaps="false"
-            android:textColor="#ffffff"
-            android:textSize="25sp" />
-
-        <Button
-            android:id="@+id/btn_plus"
-            android:layout_width="38dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="2dp"
-            android:background="#2395c2"
-            android:text="+"
-            android:textAllCaps="false"
-            android:textColor="#ffffff"
-            android:textSize="28sp" />
     </TableRow>
-
-    <Button
-        android:id="@+id/deal"
-        android:layout_width="110dp"
-        android:layout_height="60dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="15dp"
-        android:background="@color/colorPrimaryDark"
-        android:gravity="center"
-        android:text="Deal"
-        android:textAllCaps="false"
-        android:textSize="35sp" />
 </RelativeLayout>

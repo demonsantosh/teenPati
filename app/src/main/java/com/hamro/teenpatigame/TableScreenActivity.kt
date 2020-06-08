@@ -2,11 +2,10 @@ package com.hamro.teenpatigame
 
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.speech.tts.TextToSpeech
-import android.speech.tts.TextToSpeech.OnInitListener
 import android.view.View
 import android.widget.Button
 import android.widget.TableRow
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
@@ -14,10 +13,10 @@ import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.hamro.teenpatigame.datas.*
-import java.util.*
+import kotlinx.android.synthetic.main.activity_table_screen.view.*
 
 
-class TableScreenActivity : AppCompatActivity() {
+class TableScreenActivity : AppCompatActivity(), View.OnClickListener {
 
     private val DIAMONDS = "D" //Diamond 1
     private val HEARTS = "H" //Heart 2
@@ -65,23 +64,18 @@ class TableScreenActivity : AppCompatActivity() {
     var tbRowP5: TableRow? = null
     var tbRowFnBar: TableRow? = null
 
-    var fold: Button? = null
-    var show: Button? = null
-    var call: Button? = null
-    var raise: Button? = null
-    var minus: Button? = null
-    var plus: Button? = null
-    var deal: Button? = null
+    var btnFold: Button? = null
+    var btnShow: Button? = null
+    var btnRaise: Button? = null
 
     var txvRaiseAmt: AppCompatTextView? = null
     var txvCallAmount: AppCompatTextView? = null
     var txvPot: AppCompatTextView? = null
 
-    var textToSpeech: TextToSpeech? = null
 
 
     var wholeDataRef: DatabaseReference? = null
-    var gameOnReference: DatabaseReference? = null
+   var gameOnReference: DatabaseReference? = null
     var activePlayerReference: DatabaseReference? = null
     var currentTurnReference: DatabaseReference? = null
     var player1DataRef: DatabaseReference? = null
@@ -92,6 +86,7 @@ class TableScreenActivity : AppCompatActivity() {
     var database: FirebaseDatabase? = null
 
     var myId: Int = 0
+    var isOut = true
     var activePlayers: Int = 0
     var currentTurn: Int = 0
     var isGameOn: Boolean = false
@@ -104,8 +99,8 @@ class TableScreenActivity : AppCompatActivity() {
 
     lateinit var countdown_timer: CountDownTimer
     var isRunning: Boolean = false;
-    var time_in_milli_seconds = 30000L
-    var START_MILLI_SECONDS = 30000L
+    var time_in_milli_seconds = 15000L
+    var START_MILLI_SECONDS = 15000L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -139,13 +134,18 @@ class TableScreenActivity : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     currentTurn = dataSnapshot.getValue(Int::class.java) as Int
-                    if(myId!=0 && currentTurn==myId){
-                        tbRowFnBar!!.visibility=View.VISIBLE
-                    }else{
-                        tbRowFnBar!!.visibility=View.VISIBLE
+                    if (myId != 0 && currentTurn == myId) {
+                        tbRowFnBar!!.visibility = View.VISIBLE
+                    } else {
+                        tbRowFnBar!!.visibility = View.VISIBLE
                     }
-
                     if (currentTurn != 0) {
+                        if (isRunning) {
+                            isRunning = false
+                            resetTimer()
+                            cancelTimer()
+                        }
+                        startTimer(time_in_milli_seconds, currentTurn)
                         player1!!.setBackgroundColor(
                             ContextCompat.getColor(
                                 this@TableScreenActivity,
@@ -216,6 +216,7 @@ class TableScreenActivity : AppCompatActivity() {
 
                 }
             }
+
             override fun onCancelled(databaseError: DatabaseError) {
 
             }
@@ -259,87 +260,84 @@ class TableScreenActivity : AppCompatActivity() {
                 if (dataSnapshot.exists()) {
                     player5Model = dataSnapshot.getValue(Player5::class.java)
                     if (player5Model?.out == false) {
+                        activePlayerReference?.setValue(5)
+                        //game starts only if 5 members Joins
+                        gameOnReference?.setValue(true)
+                        currentTurnReference?.setValue(1)
+                        txvMoneyPLayer5?.setText("" + player5Model?.money)
+                        wholeData?.players?.player1?.cardsInHand?.card1Type = 1
+                        wholeData?.players?.player1?.cardsInHand?.card1Number = 1
+                        wholeData?.players?.player1?.cardsInHand?.card2Type = 2
+                        wholeData?.players?.player1?.cardsInHand?.card2Number = 1
+                        wholeData?.players?.player1?.cardsInHand?.card3Type = 3
+                        wholeData?.players?.player1?.cardsInHand?.card3Number = 1
+
+                        wholeData?.players?.player2?.cardsInHand?.card1Type = 1
+                        wholeData?.players?.player2?.cardsInHand?.card1Number = 2
+                        wholeData?.players?.player2?.cardsInHand?.card2Type = 2
+                        wholeData?.players?.player2?.cardsInHand?.card2Number = 2
+                        wholeData?.players?.player2?.cardsInHand?.card3Type = 3
+                        wholeData?.players?.player2?.cardsInHand?.card3Number = 2
+
+                        wholeData?.players?.player3?.cardsInHand?.card1Type = 1
+                        wholeData?.players?.player3?.cardsInHand?.card1Number = 3
+                        wholeData?.players?.player3?.cardsInHand?.card2Type = 2
+                        wholeData?.players?.player3?.cardsInHand?.card2Number = 3
+                        wholeData?.players?.player3?.cardsInHand?.card3Type = 3
+                        wholeData?.players?.player3?.cardsInHand?.card3Number = 3
+
+                        wholeData?.players?.player4?.cardsInHand?.card1Type = 1
+                        wholeData?.players?.player4?.cardsInHand?.card1Number = 4
+                        wholeData?.players?.player4?.cardsInHand?.card2Type = 2
+                        wholeData?.players?.player4?.cardsInHand?.card2Number = 4
+                        wholeData?.players?.player4?.cardsInHand?.card3Type = 3
+                        wholeData?.players?.player4?.cardsInHand?.card3Number = 4
+
+                        wholeData?.players?.player5?.cardsInHand?.card1Type = 1
+                        wholeData?.players?.player5?.cardsInHand?.card1Number = 5
+                        wholeData?.players?.player5?.cardsInHand?.card2Type = 2
+                        wholeData?.players?.player5?.cardsInHand?.card2Number = 5
+                        wholeData?.players?.player5?.cardsInHand?.card3Type = 3
+                        wholeData?.players?.player5?.cardsInHand?.card3Number = 5
                         if (myId != 0 && myId == player5Model?.id) {
                             player5?.setText("You")
-                            activePlayerReference?.setValue(5)
-                            //game starts only if 5 members Joins
-                            gameOnReference?.setValue(true)
-                            currentTurnReference?.setValue(1)
-
-                            wholeData?.players?.player1?.cardsInHand?.card1Type = 1
-                            wholeData?.players?.player1?.cardsInHand?.card1Number = 1
-                            wholeData?.players?.player1?.cardsInHand?.card2Type = 2
-                            wholeData?.players?.player1?.cardsInHand?.card2Number = 1
-                            wholeData?.players?.player1?.cardsInHand?.card3Type = 3
-                            wholeData?.players?.player1?.cardsInHand?.card3Number = 1
-
-                            wholeData?.players?.player2?.cardsInHand?.card1Type = 1
-                            wholeData?.players?.player2?.cardsInHand?.card1Number = 2
-                            wholeData?.players?.player2?.cardsInHand?.card2Type = 2
-                            wholeData?.players?.player2?.cardsInHand?.card2Number = 2
-                            wholeData?.players?.player2?.cardsInHand?.card3Type = 3
-                            wholeData?.players?.player2?.cardsInHand?.card3Number = 2
-
-                            wholeData?.players?.player3?.cardsInHand?.card1Type = 1
-                            wholeData?.players?.player3?.cardsInHand?.card1Number = 3
-                            wholeData?.players?.player3?.cardsInHand?.card2Type = 2
-                            wholeData?.players?.player3?.cardsInHand?.card2Number = 3
-                            wholeData?.players?.player3?.cardsInHand?.card3Type = 3
-                            wholeData?.players?.player3?.cardsInHand?.card3Number = 3
-
-                            wholeData?.players?.player4?.cardsInHand?.card1Type = 1
-                            wholeData?.players?.player4?.cardsInHand?.card1Number = 4
-                            wholeData?.players?.player4?.cardsInHand?.card2Type = 2
-                            wholeData?.players?.player4?.cardsInHand?.card2Number = 4
-                            wholeData?.players?.player4?.cardsInHand?.card3Type = 3
-                            wholeData?.players?.player4?.cardsInHand?.card3Number = 4
-
-                            wholeData?.players?.player5?.cardsInHand?.card1Type = 1
-                            wholeData?.players?.player5?.cardsInHand?.card1Number = 5
-                            wholeData?.players?.player5?.cardsInHand?.card2Type = 2
-                            wholeData?.players?.player5?.cardsInHand?.card2Number = 5
-                            wholeData?.players?.player5?.cardsInHand?.card3Type = 3
-                            wholeData?.players?.player5?.cardsInHand?.card3Number = 5
-                            wholeDataRef?.setValue(wholeData)
                         } else {
                             player5?.setText("" + player5Model?.playerName)
                         }
-                        txvMoneyPLayer5?.setText("" + player5Model?.money)
 
+                        wholeDataRef?.setValue(wholeData)
                         if (player5Model?.cardsInHand?.card1Type != 0) {
                             tbRowP5?.visibility = View.VISIBLE
-
-
-                            lateinit var prefix:String
-                            var suffix=player5Model?.cardsInHand?.card1Number
-                            if(player5Model?.cardsInHand?.card1Type==1){
-                                prefix=DIAMONDS
-                            }else if(player5Model?.cardsInHand?.card1Type==2){
-                                prefix=HEARTS
-                            }else if(player5Model?.cardsInHand?.card1Type==3){
-                                prefix=SPADE
+                            lateinit var prefix: String
+                            var suffix = player5Model?.cardsInHand?.card1Number
+                            if (player5Model?.cardsInHand?.card1Type == 1) {
+                                prefix = DIAMONDS
+                            } else if (player5Model?.cardsInHand?.card1Type == 2) {
+                                prefix = HEARTS
+                            } else if (player5Model?.cardsInHand?.card1Type == 3) {
+                                prefix = SPADE
                             }
-                            txtP5card1?.setText(prefix+suffix)
+                            txtP5card1?.setText(prefix + suffix)
 
-                            if(player5Model?.cardsInHand?.card2Type==1){
-                                prefix=DIAMONDS
-                            }else if(player5Model?.cardsInHand?.card2Type==2){
-                                prefix=HEARTS
-                            }else if(player5Model?.cardsInHand?.card2Type==3){
-                                prefix=SPADE
+                            if (player5Model?.cardsInHand?.card2Type == 1) {
+                                prefix = DIAMONDS
+                            } else if (player5Model?.cardsInHand?.card2Type == 2) {
+                                prefix = HEARTS
+                            } else if (player5Model?.cardsInHand?.card2Type == 3) {
+                                prefix = SPADE
                             }
-                            suffix=player5Model?.cardsInHand?.card2Number
-                            txtP5card2?.setText(prefix+suffix)
+                            suffix = player5Model?.cardsInHand?.card2Number
+                            txtP5card2?.setText(prefix + suffix)
 
-                            if(player5Model?.cardsInHand?.card3Type==1){
-                                prefix=DIAMONDS
-                            }else if(player5Model?.cardsInHand?.card3Type==2){
-                                prefix=HEARTS
-                            }else if(player5Model?.cardsInHand?.card3Type==3){
-                                prefix=SPADE
+                            if (player5Model?.cardsInHand?.card3Type == 1) {
+                                prefix = DIAMONDS
+                            } else if (player5Model?.cardsInHand?.card3Type == 2) {
+                                prefix = HEARTS
+                            } else if (player5Model?.cardsInHand?.card3Type == 3) {
+                                prefix = SPADE
                             }
-                            suffix=player5Model?.cardsInHand?.card3Number
-                            txtP5card3?.setText(prefix+suffix)
+                            suffix = player5Model?.cardsInHand?.card3Number
+                            txtP5card3?.setText(prefix + suffix)
 
                         }
                     } else {
@@ -374,36 +372,36 @@ class TableScreenActivity : AppCompatActivity() {
                             tbRowP4?.visibility = View.VISIBLE
 
 
-                            lateinit var prefix:String
-                            var suffix=player4Model?.cardsInHand?.card1Number
-                            if(player4Model?.cardsInHand?.card1Type==1){
-                                prefix=DIAMONDS
-                            }else if(player4Model?.cardsInHand?.card1Type==2){
-                                prefix=HEARTS
-                            }else if(player4Model?.cardsInHand?.card1Type==3){
-                                prefix=SPADE
+                            lateinit var prefix: String
+                            var suffix = player4Model?.cardsInHand?.card1Number
+                            if (player4Model?.cardsInHand?.card1Type == 1) {
+                                prefix = DIAMONDS
+                            } else if (player4Model?.cardsInHand?.card1Type == 2) {
+                                prefix = HEARTS
+                            } else if (player4Model?.cardsInHand?.card1Type == 3) {
+                                prefix = SPADE
                             }
-                            txtP4card1?.setText(prefix+suffix)
+                            txtP4card1?.setText(prefix + suffix)
 
-                            if(player4Model?.cardsInHand?.card2Type==1){
-                                prefix=DIAMONDS
-                            }else if(player4Model?.cardsInHand?.card2Type==2){
-                                prefix=HEARTS
-                            }else if(player4Model?.cardsInHand?.card2Type==3){
-                                prefix=SPADE
+                            if (player4Model?.cardsInHand?.card2Type == 1) {
+                                prefix = DIAMONDS
+                            } else if (player4Model?.cardsInHand?.card2Type == 2) {
+                                prefix = HEARTS
+                            } else if (player4Model?.cardsInHand?.card2Type == 3) {
+                                prefix = SPADE
                             }
-                            suffix=player4Model?.cardsInHand?.card2Number
-                            txtP4card2?.setText(prefix+suffix)
+                            suffix = player4Model?.cardsInHand?.card2Number
+                            txtP4card2?.setText(prefix + suffix)
 
-                            if(player4Model?.cardsInHand?.card3Type==1){
-                                prefix=DIAMONDS
-                            }else if(player4Model?.cardsInHand?.card3Type==2){
-                                prefix=HEARTS
-                            }else if(player4Model?.cardsInHand?.card3Type==3){
-                                prefix=SPADE
+                            if (player4Model?.cardsInHand?.card3Type == 1) {
+                                prefix = DIAMONDS
+                            } else if (player4Model?.cardsInHand?.card3Type == 2) {
+                                prefix = HEARTS
+                            } else if (player4Model?.cardsInHand?.card3Type == 3) {
+                                prefix = SPADE
                             }
-                            suffix=player4Model?.cardsInHand?.card3Number
-                            txtP4card3?.setText(prefix+suffix)
+                            suffix = player4Model?.cardsInHand?.card3Number
+                            txtP4card3?.setText(prefix + suffix)
                         }
                     } else {
                         player4?.setText("")
@@ -437,36 +435,36 @@ class TableScreenActivity : AppCompatActivity() {
                             tbRowP3?.visibility = View.VISIBLE
 
 
-                            lateinit var prefix:String
-                            var suffix=player3Model?.cardsInHand?.card1Number
-                            if(player3Model?.cardsInHand?.card1Type==1){
-                                prefix=DIAMONDS
-                            }else if(player3Model?.cardsInHand?.card1Type==2){
-                                prefix=HEARTS
-                            }else if(player3Model?.cardsInHand?.card1Type==3){
-                                prefix=SPADE
+                            lateinit var prefix: String
+                            var suffix = player3Model?.cardsInHand?.card1Number
+                            if (player3Model?.cardsInHand?.card1Type == 1) {
+                                prefix = DIAMONDS
+                            } else if (player3Model?.cardsInHand?.card1Type == 2) {
+                                prefix = HEARTS
+                            } else if (player3Model?.cardsInHand?.card1Type == 3) {
+                                prefix = SPADE
                             }
-                            txtP3card1?.setText(prefix+suffix)
+                            txtP3card1?.setText(prefix + suffix)
 
-                            if(player3Model?.cardsInHand?.card2Type==1){
-                                prefix=DIAMONDS
-                            }else if(player3Model?.cardsInHand?.card2Type==2){
-                                prefix=HEARTS
-                            }else if(player3Model?.cardsInHand?.card2Type==3){
-                                prefix=SPADE
+                            if (player3Model?.cardsInHand?.card2Type == 1) {
+                                prefix = DIAMONDS
+                            } else if (player3Model?.cardsInHand?.card2Type == 2) {
+                                prefix = HEARTS
+                            } else if (player3Model?.cardsInHand?.card2Type == 3) {
+                                prefix = SPADE
                             }
-                            suffix=player3Model?.cardsInHand?.card2Number
-                            txtP3card2?.setText(prefix+suffix)
+                            suffix = player3Model?.cardsInHand?.card2Number
+                            txtP3card2?.setText(prefix + suffix)
 
-                            if(player3Model?.cardsInHand?.card3Type==1){
-                                prefix=DIAMONDS
-                            }else if(player3Model?.cardsInHand?.card3Type==2){
-                                prefix=HEARTS
-                            }else if(player3Model?.cardsInHand?.card3Type==3){
-                                prefix=SPADE
+                            if (player3Model?.cardsInHand?.card3Type == 1) {
+                                prefix = DIAMONDS
+                            } else if (player3Model?.cardsInHand?.card3Type == 2) {
+                                prefix = HEARTS
+                            } else if (player3Model?.cardsInHand?.card3Type == 3) {
+                                prefix = SPADE
                             }
-                            suffix=player3Model?.cardsInHand?.card3Number
-                            txtP3card3?.setText(prefix+suffix)
+                            suffix = player3Model?.cardsInHand?.card3Number
+                            txtP3card3?.setText(prefix + suffix)
                         }
                     } else {
                         player3?.setText("")
@@ -498,36 +496,36 @@ class TableScreenActivity : AppCompatActivity() {
                         if (player2Model?.cardsInHand?.card1Type != 0) {
                             tbRowP2?.visibility = View.VISIBLE
 
-                            lateinit var prefix:String
-                            var suffix=player2Model?.cardsInHand?.card1Number
-                            if(player2Model?.cardsInHand?.card1Type==1){
-                                prefix=DIAMONDS
-                            }else if(player2Model?.cardsInHand?.card1Type==2){
-                                prefix=HEARTS
-                            }else if(player2Model?.cardsInHand?.card1Type==3){
-                                prefix=SPADE
+                            lateinit var prefix: String
+                            var suffix = player2Model?.cardsInHand?.card1Number
+                            if (player2Model?.cardsInHand?.card1Type == 1) {
+                                prefix = DIAMONDS
+                            } else if (player2Model?.cardsInHand?.card1Type == 2) {
+                                prefix = HEARTS
+                            } else if (player2Model?.cardsInHand?.card1Type == 3) {
+                                prefix = SPADE
                             }
-                            txtP2card1?.setText(prefix+suffix)
+                            txtP2card1?.setText(prefix + suffix)
 
-                            if(player2Model?.cardsInHand?.card2Type==1){
-                                prefix=DIAMONDS
-                            }else if(player2Model?.cardsInHand?.card2Type==2){
-                                prefix=HEARTS
-                            }else if(player2Model?.cardsInHand?.card2Type==3){
-                                prefix=SPADE
+                            if (player2Model?.cardsInHand?.card2Type == 1) {
+                                prefix = DIAMONDS
+                            } else if (player2Model?.cardsInHand?.card2Type == 2) {
+                                prefix = HEARTS
+                            } else if (player2Model?.cardsInHand?.card2Type == 3) {
+                                prefix = SPADE
                             }
-                            suffix=player2Model?.cardsInHand?.card2Number
-                            txtP2card2?.setText(prefix+suffix)
+                            suffix = player2Model?.cardsInHand?.card2Number
+                            txtP2card2?.setText(prefix + suffix)
 
-                            if(player2Model?.cardsInHand?.card3Type==1){
-                                prefix=DIAMONDS
-                            }else if(player2Model?.cardsInHand?.card3Type==2){
-                                prefix=HEARTS
-                            }else if(player2Model?.cardsInHand?.card3Type==3){
-                                prefix=SPADE
+                            if (player2Model?.cardsInHand?.card3Type == 1) {
+                                prefix = DIAMONDS
+                            } else if (player2Model?.cardsInHand?.card3Type == 2) {
+                                prefix = HEARTS
+                            } else if (player2Model?.cardsInHand?.card3Type == 3) {
+                                prefix = SPADE
                             }
-                            suffix=player2Model?.cardsInHand?.card3Number
-                            txtP2card3?.setText(prefix+suffix)
+                            suffix = player2Model?.cardsInHand?.card3Number
+                            txtP2card3?.setText(prefix + suffix)
 
                         }
                     } else {
@@ -559,36 +557,36 @@ class TableScreenActivity : AppCompatActivity() {
                         txvMoneyPLayer1?.setText("" + player1Model?.money)
                         if (player1Model?.cardsInHand?.card1Type != 0) {
                             tbRowP1?.visibility = View.VISIBLE
-                            lateinit var prefix:String
-                            var suffix=player1Model?.cardsInHand?.card1Number
-                            if(player1Model?.cardsInHand?.card1Type==1){
-                                prefix=DIAMONDS
-                            }else if(player1Model?.cardsInHand?.card1Type==2){
-                                prefix=HEARTS
-                            }else if(player1Model?.cardsInHand?.card1Type==3){
-                                prefix=SPADE
+                            lateinit var prefix: String
+                            var suffix = player1Model?.cardsInHand?.card1Number
+                            if (player1Model?.cardsInHand?.card1Type == 1) {
+                                prefix = DIAMONDS
+                            } else if (player1Model?.cardsInHand?.card1Type == 2) {
+                                prefix = HEARTS
+                            } else if (player1Model?.cardsInHand?.card1Type == 3) {
+                                prefix = SPADE
                             }
-                            txtP1card1?.setText(prefix+suffix)
+                            txtP1card1?.setText(prefix + suffix)
 
-                            if(player1Model?.cardsInHand?.card2Type==1){
-                                prefix=DIAMONDS
-                            }else if(player1Model?.cardsInHand?.card2Type==2){
-                                prefix=HEARTS
-                            }else if(player1Model?.cardsInHand?.card2Type==3){
-                                prefix=SPADE
+                            if (player1Model?.cardsInHand?.card2Type == 1) {
+                                prefix = DIAMONDS
+                            } else if (player1Model?.cardsInHand?.card2Type == 2) {
+                                prefix = HEARTS
+                            } else if (player1Model?.cardsInHand?.card2Type == 3) {
+                                prefix = SPADE
                             }
-                            suffix=player1Model?.cardsInHand?.card2Number
-                            txtP1card2?.setText(prefix+suffix)
+                            suffix = player1Model?.cardsInHand?.card2Number
+                            txtP1card2?.setText(prefix + suffix)
 
-                            if(player1Model?.cardsInHand?.card3Type==1){
-                                prefix=DIAMONDS
-                            }else if(player1Model?.cardsInHand?.card3Type==2){
-                                prefix=HEARTS
-                            }else if(player1Model?.cardsInHand?.card3Type==3){
-                                prefix=SPADE
+                            if (player1Model?.cardsInHand?.card3Type == 1) {
+                                prefix = DIAMONDS
+                            } else if (player1Model?.cardsInHand?.card3Type == 2) {
+                                prefix = HEARTS
+                            } else if (player1Model?.cardsInHand?.card3Type == 3) {
+                                prefix = SPADE
                             }
-                            suffix=player1Model?.cardsInHand?.card3Number
-                            txtP1card3?.setText(prefix+suffix)
+                            suffix = player1Model?.cardsInHand?.card3Number
+                            txtP1card3?.setText(prefix + suffix)
                         }
                     } else {
                         player1?.setText("")
@@ -704,34 +702,50 @@ class TableScreenActivity : AppCompatActivity() {
 
         tbRowFnBar = findViewById<View>(R.id.tbRowFnBar) as TableRow
 
-
-        fold = findViewById<View>(R.id.btn_fold) as Button
-        fold = findViewById<View>(R.id.btn_show) as Button
-        fold = findViewById<View>(R.id.btn_call) as Button
-        fold = findViewById<View>(R.id.btn_raise) as Button
-        fold = findViewById<View>(R.id.btn_minus) as Button
-        fold = findViewById<View>(R.id.btn_plus) as Button
-        deal = findViewById<View>(R.id.deal) as Button
-
-        txvRaiseAmt = findViewById<View>(R.id.txt_raise) as AppCompatTextView
-        txvCallAmount = findViewById<View>(R.id.txt_call) as AppCompatTextView
+        btnFold = findViewById<View>(R.id.btnFold) as Button
+        btnShow = findViewById<View>(R.id.btnShow) as Button
+        btnRaise = findViewById<View>(R.id.btnRaise) as Button
+        btnRaise!!.setOnClickListener(this)
 
         txvPot = findViewById<View>(R.id.pot) as AppCompatTextView
 
-        textToSpeech = TextToSpeech(this,
-            OnInitListener { textToSpeech!!.language = Locale.ENGLISH })
-        //<---------- Intialization ------------------>
-        tbRowFnBar!!.setVisibility(View.INVISIBLE)
-        tbRowFnBar!!.removeView(show)
 
+        tbRowFnBar!!.setVisibility(View.INVISIBLE)
     }
 
-    fun startTimer(time_in_seconds: Long,currentTurn:Int) {
+    fun startTimer(time_in_seconds: Long, currentTurn: Int) {
         countdown_timer = object : CountDownTimer(time_in_seconds, 1000) {
             override fun onFinish() {
+                if (this@TableScreenActivity.currentTurn == currentTurn) {
+                    if (currentTurn == 5) {
+                        currentTurnReference?.setValue(4)
+                        player5Model?.out = true
+                        player5DataRef?.setValue(player5Model)
+                    } else {
+                        currentTurnReference?.setValue(currentTurn + 1)
+                        if(currentTurn==1){
+                            player1Model?.out = true
+                            player1DataRef?.setValue(player1Model)
+                        }else if(currentTurn==2){
+                            player2Model?.out = true
+                            player2DataRef?.setValue(player2Model)
+                        }else if(currentTurn==3){
+                            player3Model?.out = true
+                            player3DataRef?.setValue(player3Model)
+                        }else if(currentTurn==4){
+                            player4Model?.out = true
+                            player4DataRef?.setValue(player4Model)
+                        }
+                    }
+                    if(currentTurn==myId){
+                        Toast.makeText(applicationContext, "You are Out of Game ", Toast.LENGTH_LONG).show()
+                        finish()
+                       var totalActivePlayers= wholeData?.activePlayers
+                        activePlayerReference?.setValue(totalActivePlayers?.minus(1))
 
+                    }
+                }
             }
-
             override fun onTick(p0: Long) {
                 time_in_milli_seconds = p0
             }
@@ -744,7 +758,26 @@ class TableScreenActivity : AppCompatActivity() {
         time_in_milli_seconds = START_MILLI_SECONDS
     }
 
-    fun cancelTimer(){
+    fun cancelTimer() {
         countdown_timer.cancel();
     }
+    override fun onClick(v: View?) {
+        when (v!!.id) {
+            R.id.btnRaise -> {
+                if(currentTurn!=0){
+                    if(currentTurn==5){
+                        currentTurnReference?.setValue(1)
+                    }else{
+                        currentTurnReference?.setValue(currentTurn+1)
+                    }
+                }
+            }
+            1 -> println("Number too low")
+            2 -> println("Number too low")
+            3 -> println("Number correct")
+            4 -> println("Number too high, but acceptable")
+            else -> println("Number too high")
+        }
+    }
+
 }

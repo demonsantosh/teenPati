@@ -1,0 +1,88 @@
+{
+  "activePlayers" : 0,
+  "currentTurn" : 0,
+  "gameOn" : false,
+  "players" : {
+    "player1" : {
+      "cardsInHand" : {
+        "card1Number" : 1,
+        "card1Type" : 1,
+        "card2Number" : 1,
+        "card2Type" : 2,
+        "card3Number" : 1,
+        "card3Type" : 3
+      },
+      "id" : 1,
+      "money" : 20000,
+      "out" : true,
+      "playerName" : "P1",
+      "playing" : false
+    },
+    "player2" : {
+      "cardsInHand" : {
+        "card1Number" : 2,
+        "card1Type" : 1,
+        "card2Number" : 2,
+        "card2Type" : 2,
+        "card3Number" : 2,
+        "card3Type" : 3
+      },
+      "id" : 2,
+      "money" : 20000,
+      "out" : true,
+      "playerName" : "P2",
+      "playing" : false
+    },
+    "player3" : {
+      "cardsInHand" : {
+        "card1Number" : 3,
+        "card1Type" : 1,
+        "card2Number" : 3,
+        "card2Type" : 2,
+        "card3Number" : 3,
+        "card3Type" : 3
+      },
+      "id" : 3,
+      "money" : 20000,
+      "out" : true,
+      "playerName" : "P3",
+      "playing" : false
+    },
+    "player4" : {
+      "cardsInHand" : {
+        "card1Number" : 4,
+        "card1Type" : 1,
+        "card2Number" : 4,
+        "card2Type" : 2,
+        "card3Number" : 4,
+        "card3Type" : 3
+      },
+      "id" : 4,
+      "money" : 20000,
+      "out" : true,
+      "playerName" : "P4",
+      "playing" : false
+    },
+    "player5" : {
+      "cardsInHand" : {
+        "card1Number" : 5,
+        "card1Type" : 1,
+        "card2Number" : 5,
+        "card2Type" : 2,
+        "card3Number" : 5,
+        "card3Type" : 3
+      },
+      "id" : 5,
+      "money" : 20000,
+      "out" : true,
+      "playerName" : "P5",
+      "playing" : false
+    }
+  },
+  "winners" : {
+    "firstId" : 1,
+    "fourthId" : 4,
+    "secondId" : 2,
+    "thirdId" : 3
+  }
+}

@@ -13,7 +13,6 @@ import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.hamro.teenpatigame.datas.*
-import kotlinx.android.synthetic.main.activity_table_screen.view.*
 
 
 class TableScreenActivity : AppCompatActivity(), View.OnClickListener {
@@ -98,9 +97,10 @@ class TableScreenActivity : AppCompatActivity(), View.OnClickListener {
     var player5Model: Player5? = null
 
     lateinit var countdown_timer: CountDownTimer
-    var isRunning: Boolean = false;
-    var time_in_milli_seconds = 15000L
-    var START_MILLI_SECONDS = 15000L
+    var isRunning: Boolean = false
+    //delay set for 20 seconds
+    var time_in_milli_seconds = 20000L
+    var START_MILLI_SECONDS = 20000L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -231,7 +231,6 @@ class TableScreenActivity : AppCompatActivity(), View.OnClickListener {
                     activePlayers = dataSnapshot.getValue(Int::class.java) as Int
                 }
             }
-
             override fun onCancelled(databaseError: DatabaseError) {
                 // Failed to read value
             }
@@ -772,11 +771,8 @@ class TableScreenActivity : AppCompatActivity(), View.OnClickListener {
                     }
                 }
             }
-            1 -> println("Number too low")
-            2 -> println("Number too low")
-            3 -> println("Number correct")
-            4 -> println("Number too high, but acceptable")
-            else -> println("Number too high")
+
+            else -> println("Default")
         }
     }
 
